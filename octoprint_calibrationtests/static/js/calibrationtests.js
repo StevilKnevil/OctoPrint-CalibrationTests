@@ -25,7 +25,7 @@ $(function() {
 //                headers:     {"X-Api-Key": UI_API_KEY},
 //                data:        JSON.stringify({"command": "git", "arg1": "pull"}),
                 success: function (result) {
-                    log.info(result.responseJSON.state.flags.ready);
+                    log.info(result.state.flags.ready);
                 },
                 error: function() {
                     log.error("Error getting status of printer");
