@@ -3,11 +3,10 @@ import logging
 PrinterSettings = {}
 
 def getPrinterSettings():
-	# TODO: If we haven't populated the printer settings yet, send gcode to query them and wait for the response.
-	# Remember: Failsafe if eror or no connection etc.
-	#_logger.info(_printer.commands('M503'))
 	return PrinterSettings
 
+def refreshPrinterSettings(_printer):
+	_printer.commands('M503')
 
 def detect_machine_settings(comm, line, *args, **kwargs):
 	# parse a dictionary for the line
