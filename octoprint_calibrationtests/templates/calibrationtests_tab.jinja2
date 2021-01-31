@@ -4,8 +4,8 @@ Make a mark on your filament 120mm away from where it enters the extruder. Run t
     <button class="btn" data-bind="click: doExtrude, enable: printerIsReady">{{ _('Run Test') }}</button>
     <label>Length left to mark</label><input type="text" data-bind="value: lengthRemaining">
     <label>Extruded Material</label><input type="text" data-bind="value: extrudedMaterial" disabled>
-    <label>Calculated E-Steps</label><input type="text" data-bind="value: calculatedESteps" disabled>
-    <button class="btn btn-primary" data-bind="click: doExtrude">{{ _('Update Printer Settings') }}</button>
+    <label>Calculated E-Steps</label><input type="text" data-bind="value: calculatedESteps">
+    <button class="btn btn-primary" data-bind="click: setESteps">{{ _('Update Printer Settings') }}</button>
 
     <!--
     Needs backend implementation

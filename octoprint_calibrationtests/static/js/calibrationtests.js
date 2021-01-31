@@ -41,6 +41,16 @@ $(function() {
 				});
 		};
 
+		self.setESteps = function() {
+			// Write the new value, save the setting and read back the data to check
+			commands = {commands: [
+				"M92 E"+self.calculatedESteps(),
+				"M500",
+				"M503"
+			]}
+			OctoPrint.postJson("api/printer/command", commands)
+		};
+
 		var isExtruding = false
 		self.doExtrude = function() {
 			// Ignore requests to extrude if we're already running the test
