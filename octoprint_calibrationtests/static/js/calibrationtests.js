@@ -10,10 +10,11 @@ $(function() {
 		self.lengthRemaining = ko.observable(20);
 		self.currentESteps = ko.observable();
 		self.extrudedMaterial = ko.computed(function(){
-			return self.amountToExtrude - self.lengthRemaining();
+			return (self.amountToExtrude+20) - self.lengthRemaining();
 		});
 		self.calculatedESteps = ko.computed(function(){
-			return self.currentESteps();
+			let numSteps = self.currentESteps() * self.amountToExtrude;
+			return numSteps/self.extrudedMaterial();
 		});
 		
 		self.refreshPrinterIsReady = function() {
