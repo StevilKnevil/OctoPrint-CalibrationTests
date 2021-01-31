@@ -25,19 +25,19 @@ class CalibrationtestsPlugin(octoprint.plugin.StartupPlugin,
 	##~~ StartupPlugin mixin
 
 	def on_after_startup(self):
-		self._logger.info("Hello World! (more: %s)" % self._settings.get(["url"]))
+		self._logger.info("Calibration Tests Plugin Started")
 
 	##~~ SettingsPlugin mixin
 
 	def get_settings_defaults(self):
-		return dict(url="https://en.wikipedia.org/wiki/Hello_world")
+		return dict(confirmAllGcode = True)
 
 	##~~ TemplatePlugin mixin
 
 	def get_template_vars(self):
 		return [
 			dict(type="settings", custom_bindings=False)
-		]		
+		]
 
 	##~~ AssetPlugin mixin
 

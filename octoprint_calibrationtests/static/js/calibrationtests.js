@@ -43,27 +43,34 @@ $(function() {
 
 		self.setESteps = function() {
 			// Write the new value, save the setting and read back the data to check
-			commands = {commands: [
+			commands = [
 				"M92 E"+self.calculatedESteps(),
 				"M500",
 				"M503"
-			]}
-			OctoPrint.postJson("api/printer/command", commands)
+			];
+			self.sendGcode(commands, ()=>{})
 		};
 
 		var isExtruding = false
 		self.doExtrude = function() {
 			// Ignore requests to extrude if we're already running the test
 			if (!isExtruding) {
-				isExtruding = true
-				commands = {commands: [
+				isExtruding = true;
+				commands = [
 					"M109 S200",
 					"G1 E" + self.amountToExtrude,
 					"M104 S0"
-				]}
-				OctoPrint.postJson("api/printer/command", commands).done(()=>{isExtruding = false})
+				];
+				self.sendGcode(commands, ()=>{isExtruding = false;})
 			}
 		};
+
+		self.sendGcode = function(commandArray, onDone)
+		{
+			if (self.settings.settings.plugins.calibrationtests.confirmAllGcode())
+				alert(commands);
+			OctoPrint.postJson("api/printer/command", {commands: commandArray}).done(onDone)
+		}
 
 		// This will get called before the CalibrationTestsViewModel gets bound to the DOM, but after its
 		// dependencies have already been initialized. It is especially guaranteed that this method
