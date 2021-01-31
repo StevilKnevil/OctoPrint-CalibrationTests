@@ -4,7 +4,7 @@ $(function() {
 
 		self.settings = parameters[0];
 
-		self.printerIsReady = ko.observable();
+		self.printerIsReady = ko.observable(false);
 
 		//self.amountToExtrude = 100;
 		self.amountToExtrude = 10;
@@ -17,38 +17,28 @@ $(function() {
 			return self.currentESteps();
 		});
 		
-		self.updatePrinterIsReady = function() {
+		self.refreshPrinterIsReady = function() {
 			OctoPrint.get("api/connection").done(function(response) {
-				if (response.current.state == "operational")
+				if (response.current.state == "Operational")
 				{
 					// we have a connection, is the printer ready?
 					OctoPrint.get("api/printer").done(function(response){
 						self.printerIsReady(response.state.flags.ready);
 					})
 				}
+				else
+				{
+					self.printerIsReady(false);
+				}
 			})
 		};
 
-		self.updateCurrentESteps = function() {
+		self.refreshCurrentESteps = function() {
 			OctoPrint.simpleApiGet("calibrationtests", {"command": "getPrinterSettings"})
 				.done(function(response) {
 					if (!isNaN(response.ESteps))
 						self.currentESteps(response.ESteps);
 				});
-			/*
-			$.ajax({
-				url:         "/api/printer",
-				type:        "GET",
-				contentType: "application/json",
-				dataType:    "json",
-				success: function (result) {
-					log.info(result.state.flags.ready);
-				},
-				error: function() {
-					log.error("Error getting status of printer");
-				}
-			});
-			*/
 		};
 
 		self.doExtrude = function() {
@@ -74,8 +64,8 @@ $(function() {
 		// the SettingsViewModel been properly populated.
 		self.onBeforeBinding = function() {
 			// Ensure we update with current printers settings
-			var t = setInterval(self.updatePrinterIsReady, 1000)
-			var t = setInterval(self.updateCurrentESteps, 1000)
+			var t = setInterval(self.refreshPrinterIsReady, 1000)
+			var t = setInterval(self.refreshCurrentESteps, 1000)
 		}
 	}
 
