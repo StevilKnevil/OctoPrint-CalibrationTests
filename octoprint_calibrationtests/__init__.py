@@ -19,7 +19,8 @@ class CalibrationtestsPlugin(octoprint.plugin.StartupPlugin,
 							 octoprint.plugin.SettingsPlugin,
 							 octoprint.plugin.AssetPlugin,
 							 octoprint.plugin.TemplatePlugin,
-							 octoprint.plugin.SimpleApiPlugin):
+							 octoprint.plugin.SimpleApiPlugin,
+							 octoprint.plugin.EventHandlerPlugin):
 
 	##~~ StartupPlugin mixin
 
@@ -75,6 +76,13 @@ class CalibrationtestsPlugin(octoprint.plugin.StartupPlugin,
 		# TODO: route the request based on parameters send (module, command?) Depends on how many GET APIs we end up with!
 		#self._logger.info(request)
 		return flask.jsonify(utilities.getPrinterSettings())
+
+	##~~ EventHandlerPlugin mixin
+
+	def on_event(self, event, payload):
+		if event == "Connected":
+			# force a refresh of printer settings
+			utilities.refreshPrinterSettings(self._printer)
 
 	##~~ Softwareupdate hook
 
