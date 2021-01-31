@@ -10,11 +10,16 @@ from __future__ import absolute_import
 # Take a look at the documentation on what other plugin mixins are available.
 
 import octoprint.plugin
+from . import utilities
+from . import coolingTest
+#def coolingTest(_logger, startTime, endTime, steps):
+#    _logger.info("coolingTest")
 
 class CalibrationtestsPlugin(octoprint.plugin.StartupPlugin,
 							 octoprint.plugin.SettingsPlugin,
 							 octoprint.plugin.AssetPlugin,
-							 octoprint.plugin.TemplatePlugin):
+							 octoprint.plugin.TemplatePlugin,
+							 octoprint.plugin.SimpleApiPlugin):
 
 	##~~ StartupPlugin mixin
 
@@ -44,6 +49,33 @@ class CalibrationtestsPlugin(octoprint.plugin.StartupPlugin,
 			#less=["less/calibrationtests.less"]
 		)
 
+	##~~ SimpleApiPlugin mixin
+
+	def get_api_commands(self):
+		return dict(
+			printerSettings=[],
+			coolingTest=["start_time", "end_time", "steps"]
+		)
+
+	def on_api_command(self, command, data):
+		import flask
+
+		if command == "coolingTest":
+			gCode = coolingTest.generateGcode(self._logger, 0,10,10)
+
+		elif command == "speedTest":
+			self._logger.warning("speedTest not implemented")
+		elif command == "extrusionTest":
+			self._logger.warning("extrusionTest not implemented")
+		elif command == "temperatureTest":
+			self._logger.warning("temperatureTest not implemented")
+
+	def on_api_get(self, request):
+		import flask
+		# TODO: route the request based on parameters send (module, command?) Depends on how many GET APIs we end up with!
+		#self._logger.info(request)
+		return flask.jsonify(utilities.getPrinterSettings())
+
 	##~~ Softwareupdate hook
 
 	def get_update_information(self):
@@ -70,7 +102,7 @@ class CalibrationtestsPlugin(octoprint.plugin.StartupPlugin,
 # If you want your plugin to be registered within OctoPrint under a different name than what you defined in setup.py
 # ("OctoPrint-PluginSkeleton"), you may define that here. Same goes for the other metadata derived from setup.py that
 # can be overwritten via __plugin_xyz__ control properties. See the documentation for that.
-__plugin_name__ = "Calibration Tests Plugin"
+__plugin_name__ = "Calibration Tests"
 __plugin_pythoncompat__ = ">=2.7,<4"
 
 def __plugin_load__():
@@ -79,6 +111,7 @@ def __plugin_load__():
 
 	global __plugin_hooks__
 	__plugin_hooks__ = {
-		"octoprint.plugin.softwareupdate.check_config": __plugin_implementation__.get_update_information
+		"octoprint.plugin.softwareupdate.check_config": __plugin_implementation__.get_update_information,
+	    "octoprint.comm.protocol.gcode.received": utilities.detect_machine_settings
 	}
 
