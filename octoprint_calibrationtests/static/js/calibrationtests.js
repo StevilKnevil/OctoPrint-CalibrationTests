@@ -4,31 +4,61 @@ $(function() {
 
         self.settings = parameters[0];
 
-        // this will hold the URL currently displayed by the iframe
-        self.currentUrl = ko.observable();
+        self.printerIsReady = ko.observable();
 
-        // this will hold the URL entered in the text field
-        self.newUrl = ko.observable();
+        //self.amountToExtrude = 100;
+        self.amountToExtrude = 10;
+        self.lengthRemaining = ko.observable();
+        self.currentESteps = ko.observable();
+        self.extrudedMaterial = ko.computed(function(){
+            return self.amountToExtrude - self.lengthRemaining();
+        });
+        self.calculatedESteps = ko.computed(function(){
+            return self.currentESteps();
+        });
+        
+        self.updatePrinterIsReady = function() {
+            OctoPrint.get("api/connection").done(function(response) {
+                if (response.current.state == "operational")
+                {
+                    // we have a connection, is the printer ready?
+                    OctoPrint.get("api/printer").done(function(response){
+                        self.printerIsReady(response.state.flags.ready);
+                    })
+                }
+            })
+        };        
 
-        // this will be called when the user clicks the "Go" button and set the iframe's URL to
-        // the entered URL
-        self.goToUrl = function() {
-            self.currentUrl(self.newUrl());
-        };
-
-        self.test = function() {
+        self.updateCurrentESteps = function() {
+            /*
             $.ajax({
                 url:         "/api/printer",
                 type:        "GET",
                 contentType: "application/json",
                 dataType:    "json",
-//                headers:     {"X-Api-Key": UI_API_KEY},
-//                data:        JSON.stringify({"command": "git", "arg1": "pull"}),
                 success: function (result) {
                     log.info(result.state.flags.ready);
                 },
                 error: function() {
                     log.error("Error getting status of printer");
+                }
+            });
+            */
+        };
+
+        self.doExtrude = function() {
+            $.ajax({
+                url:         "/api/printer",
+                type:        "GET",
+                contentType: "application/json",
+                dataType:    "json",
+                headers:     {"X-Api-Key": UI_API_KEY},
+                data:        JSON.stringify({"command": "target", "tool0": "220"}),
+                success: function (result) {
+                    log.info("temperature set");
+                },
+                error: function() {
+                    log.error("Failed to set Temperature");
                 }
             });
         };
@@ -38,8 +68,9 @@ $(function() {
         // gets called _after_ the settings have been retrieved from the OctoPrint backend and thus
         // the SettingsViewModel been properly populated.
         self.onBeforeBinding = function() {
-            self.newUrl(self.settings.settings.plugins.calibrationtests.url());
-            self.goToUrl();
+            // Ensure we update with current printers settings
+            var t = setInterval(self.updatePrinterIsReady, 1000)
+            var t = setInterval(self.updateCurrentESteps, 1000)
         }
     }
 
