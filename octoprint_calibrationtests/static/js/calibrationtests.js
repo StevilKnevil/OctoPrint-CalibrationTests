@@ -6,9 +6,8 @@ $(function() {
 
 		self.printerIsReady = ko.observable(false);
 
-		//self.amountToExtrude = 100;
-		self.amountToExtrude = 10;
-		self.lengthRemaining = ko.observable();
+		self.amountToExtrude = 100;
+		self.lengthRemaining = ko.observable(20);
 		self.currentESteps = ko.observable();
 		self.extrudedMaterial = ko.computed(function(){
 			return self.amountToExtrude - self.lengthRemaining();
@@ -41,21 +40,18 @@ $(function() {
 				});
 		};
 
+		var isExtruding = false
 		self.doExtrude = function() {
-			$.ajax({
-				url:         "/api/printer",
-				type:        "GET",
-				contentType: "application/json",
-				dataType:    "json",
-				headers:     {"X-Api-Key": UI_API_KEY},
-				data:        JSON.stringify({"command": "target", "tool0": "220"}),
-				success: function (result) {
-					log.info("temperature set");
-				},
-				error: function() {
-					log.error("Failed to set Temperature");
-				}
-			});
+			// Ignore requests to extrude if we're already running the test
+			if (!isExtruding) {
+				isExtruding = true
+				commands = {commands: [
+					"M109 S200",
+					"G1 E" + self.amountToExtrude,
+					"M104 S0"
+				]}
+				OctoPrint.postJson("api/printer/command", commands).done(()=>{isExtruding = false})
+			}
 		};
 
 		// This will get called before the CalibrationTestsViewModel gets bound to the DOM, but after its
