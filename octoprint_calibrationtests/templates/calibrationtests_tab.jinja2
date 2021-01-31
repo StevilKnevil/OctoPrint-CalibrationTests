@@ -1,7 +1,7 @@
 Make a mark on your filament 120mm away from where it enters the extruder. Run the test, after which measure the new distance between the mark and the extruder and enter it into the field below. Finally, update the settings on the printer.
 
 <div class="input-append">
-    <button class="btn" data-bind="click: doExtrude, disabled: !printerIsReady">{{ _('Run Test') }}</button>
+    <button class="btn" data-bind="click: doExtrude, enable: printerIsReady">{{ _('Run Test') }}</button>
     <label>Length left to mark</label><input type="text" data-bind="value: lengthRemaining">
     <label>Extruded Material</label><input type="text" data-bind="value: extrudedMaterial" disabled>
     <label>Calculated E-Steps</label><input type="text" data-bind="value: calculatedESteps" disabled>
