@@ -1,8 +1,10 @@
+<legend>E-Steps Test</legend>
+
 Make a mark on your filament 120mm away from where it enters the extruder. Run the test, after which measure the new distance between the mark and the extruder and enter it into the field below. Finally, update the settings on the printer.
 
 <div class="input-append">
 
-    <label class="accordion-toggle collapsed" data-toggle="collapse" data-target="#configuration"><a>Test Configuration</a></label>
+    <label class="accordion-toggle collapsed text-right" data-toggle="collapse" data-target="#configuration"><a>Test Configuration</a></label>
 
     <div id="configuration" class="collapse">
         <div class="control-group form-horizontal" title="">
@@ -21,19 +23,15 @@ Make a mark on your filament 120mm away from where it enters the extruder. Run t
         </div>
     </div>
 
-
     <div class="control-group form-horizontal" title="The E-Steps setting as configured in the printer's hardware">
         <label class="control-label">Current E-Steps setting</label>
         <div class="controls">
             <input type="number" step=0.01 class="input-mini text-right" data-bind="value: currentESteps" disabled>
-            <span class="add-on">mm</span>
+            <span class="add-on">steps/mm</span>
         </div>
     </div>
 
-
-    <legend>E-Steps Test</legend>
-
-    <button class="btn btn-primary" data-bind="click: doExtrude, enable: printerIsReady">{{ _('Run Test') }}</button>
+    <button class="btn btn-primary row-fluid" data-bind="click: doExtrude, enable: printerIsReady">{{ _('Run Test') }}</button>
 
     <div class="control-group form-horizontal" title="Distance to the mark after test has run">
         <label class="control-label">Length left to mark</label>
