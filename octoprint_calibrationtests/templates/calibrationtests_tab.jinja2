@@ -1,15 +1,62 @@
 Make a mark on your filament 120mm away from where it enters the extruder. Run the test, after which measure the new distance between the mark and the extruder and enter it into the field below. Finally, update the settings on the printer.
 
 <div class="input-append">
-    <button class="btn" data-bind="click: doExtrude, enable: printerIsReady">{{ _('Run Test') }}</button>
-    <label>Length left to mark</label><input type="text" data-bind="value: lengthRemaining">
-    <label>Extruded Material</label><input type="text" data-bind="value: extrudedMaterial" disabled>
-    <label>Calculated E-Steps</label><input type="text" data-bind="value: calculatedESteps">
-    <button class="btn btn-primary" data-bind="click: setESteps">{{ _('Update Printer Settings') }}</button>
 
-    <!--
-    Needs backend implementation
-    -->
-    <label>Printer E-Steps setting</label><input type="text" data-bind="value: currentESteps" disabled>
+    <label class="accordion-toggle collapsed" data-toggle="collapse" data-target="#configuration"><a>Test Configuration</a></label>
+
+    <div id="configuration" class="collapse">
+        <div class="control-group form-horizontal" title="">
+            <label class="control-label">Length to extrude</label>
+            <div class="controls">
+                <input type="number" step=0.01 class="input-mini text-right" data-bind="value: lengthToExtrude">
+                <span class="add-on">mm</span>
+            </div>
+        </div>
+        <div class="control-group form-horizontal " title="The distance to the mark you've made on the filament">
+            <label class="control-label">Initial distance to mark</label>
+            <div class="controls">
+                <input type="number" step=0.01 class="input-mini text-right" data-bind="value: initialDistanceToMark">
+                <span class="add-on">mm</span>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="control-group form-horizontal" title="The E-Steps setting as configured in the printer's hardware">
+        <label class="control-label">Current E-Steps setting</label>
+        <div class="controls">
+            <input type="number" step=0.01 class="input-mini text-right" data-bind="value: currentESteps" disabled>
+            <span class="add-on">mm</span>
+        </div>
+    </div>
+
+
+    <legend>E-Steps Test</legend>
+
+    <button class="btn btn-primary" data-bind="click: doExtrude, enable: printerIsReady">{{ _('Run Test') }}</button>
+
+    <div class="control-group form-horizontal" title="Distance to the mark after test has run">
+        <label class="control-label">Length left to mark</label>
+        <div class="controls">
+            <input type="number" step=0.01 class="input-mini text-right" data-bind="value: lengthRemaining">
+            <span class="add-on">mm</span>
+        </div>
+    </div>
+    <div class="control-group form-horizontal" title="Actual amount of material extruded during test">
+        <label class="control-label">Extruded Material</label>
+        <div class="controls">
+            <input type="number" step=0.01 class="input-mini text-right" data-bind="value: extrudedMaterial" disabled>
+            <span class="add-on">mm</span>
+        </div>
+    </div>
+
+    <div class="control-group form-horizontal" title="Value to Update the Printers E-Steps setting to">
+        <label class="control-label">Calculated E-Steps</label>
+        <div class="controls">
+            <input type="number" step=0.01 class="input-mini text-right" data-bind="value: calculatedESteps">
+            <span class="add-on">steps/mm</span>
+            <button class="btn btn-danger" data-bind="click: setESteps">{{ _('Update Printer Settings') }}</button>
+        </div>
+    </div>
 </div>
 <iframe width="355" height="200" src="https://www.youtube.com/embed/X3A9Ir2SreI" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
