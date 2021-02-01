@@ -1,10 +1,16 @@
 <legend>E-Steps Test</legend>
 
-Make a mark on your filament 120mm away from where it enters the extruder. Run the test, after which measure the new distance between the mark and the extruder and enter it into the field below. Finally, update the settings on the printer.
+<ol>
+<li>Make a mark on your filament <span data-bind="text: initialDistanceToMark"></span>mm away from where it enters the extruder. 
+<li>When the test runs, <span data-bind="text: lengthToExtrude"></span>mm of material will be extruded.
+<li>Now measure the new distance between the mark and the extruder and enter it into the "Remaining Distance to mark" field below.
+<li>Your new value of E-Steps will be calculated, which you can set on yout printer with the "Update Printer Settings" button.
+</ol>
+For more details, see the video below.
 
 <div class="input-append">
 
-    <label class="accordion-toggle collapsed text-right" data-toggle="collapse" data-target="#configuration"><a>Test Configuration</a></label>
+    <label class="accordion-toggle collapsed text-right" data-toggle="collapse" data-target="#configuration"><a>Configuration</a></label>
 
     <div id="configuration" class="collapse">
         <div class="control-group form-horizontal" title="">
