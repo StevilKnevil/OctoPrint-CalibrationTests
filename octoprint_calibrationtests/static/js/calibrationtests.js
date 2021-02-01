@@ -9,12 +9,13 @@ $(function() {
 		self.lengthToExtrude = ko.observable(100);
 		self.initialDistanceToMark = ko.observable(120);
 
-		self.lengthRemaining = ko.observable("");
 		self.currentESteps = ko.observable();
+
+		self.remainingDistanceToMark = ko.observable("");
 		self.extrudedMaterial = ko.computed(function(){
-			if (self.lengthRemaining() == "")
+			if (self.remainingDistanceToMark() == "")
 			    return ""			
-			return self.initialDistanceToMark() - self.lengthRemaining();
+			return self.initialDistanceToMark() - self.remainingDistanceToMark();
 		});
 		self.calculatedESteps = ko.computed(function(){
 			if (self.extrudedMaterial() == "")
