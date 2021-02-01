@@ -6,14 +6,16 @@ $(function() {
 
 		self.printerIsReady = ko.observable(false);
 
-		self.amountToExtrude = 100;
+		self.lengthToExtrude = ko.observable(100);
+		self.initialDistanceToMark = ko.observable(20);
+
 		self.lengthRemaining = ko.observable(20);
 		self.currentESteps = ko.observable();
 		self.extrudedMaterial = ko.computed(function(){
-			return (self.amountToExtrude+20) - self.lengthRemaining();
+			return (self.lengthToExtrude()+self.initialDistanceToMark()) - self.lengthRemaining();
 		});
 		self.calculatedESteps = ko.computed(function(){
-			let numSteps = self.currentESteps() * self.amountToExtrude;
+			let numSteps = self.currentESteps() * self.lengthToExtrude();
 			return numSteps/self.extrudedMaterial();
 		});
 		
@@ -58,7 +60,7 @@ $(function() {
 				isExtruding = true;
 				commands = [
 					"M109 S200",
-					"G1 E" + self.amountToExtrude,
+					"G1 E" + self.lengthToExtrude(),
 					"M104 S0"
 				];
 				self.sendGcode(commands, ()=>{isExtruding = false;})
