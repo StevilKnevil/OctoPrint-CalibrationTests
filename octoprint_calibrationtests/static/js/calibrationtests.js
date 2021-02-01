@@ -7,14 +7,18 @@ $(function() {
 		self.printerIsReady = ko.observable(false);
 
 		self.lengthToExtrude = ko.observable(100);
-		self.initialDistanceToMark = ko.observable(20);
+		self.initialDistanceToMark = ko.observable(120);
 
-		self.lengthRemaining = ko.observable(20);
+		self.lengthRemaining = ko.observable("");
 		self.currentESteps = ko.observable();
 		self.extrudedMaterial = ko.computed(function(){
-			return (self.lengthToExtrude()+self.initialDistanceToMark()) - self.lengthRemaining();
+			if (self.lengthRemaining() == "")
+			    return ""			
+			return self.initialDistanceToMark() - self.lengthRemaining();
 		});
 		self.calculatedESteps = ko.computed(function(){
+			if (self.extrudedMaterial() == "")
+			    return ""				
 			let numSteps = self.currentESteps() * self.lengthToExtrude();
 			return numSteps/self.extrudedMaterial();
 		});
