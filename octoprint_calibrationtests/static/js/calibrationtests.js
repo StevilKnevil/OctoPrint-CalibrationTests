@@ -28,6 +28,7 @@ $(function() {
 
 		self.lengthToExtrude = ko.observable(100);
 		self.initialDistanceToMark = ko.observable(120);
+		self.hotEndTemp = ko.observable(200);
 
 		self.currentESteps = ko.observable();
 
@@ -86,10 +87,9 @@ $(function() {
 			// Ignore requests to extrude if we're already running the test
 			if (!isExtruding) {
 				isExtruding = true;
-				var temp = 200
 				commands = [
-					"; Pre-heat hotend to " + temp + " & wait",
-					"M109 S" + temp,
+					"; Pre-heat hotend to " + self.hotEndTemp() + " & wait",
+					"M109 S" + self.hotEndTemp(),
 					"; Extrude" + self.lengthToExtrude() + "mm of filament",
 					"G1 E" + self.lengthToExtrude(),
 					"; Set hot-end temp to zero",
