@@ -47,7 +47,7 @@ For more details, see the video below.
     </div>
 
     <!-- Run Test -->
-    <button class="btn btn-primary row-fluid" data-bind="click: doExtrude, enable: printerIsReady">{{ _('Run Test') }}</button>
+    <button class="btn btn-primary row-fluid" data-bind="click: doExtrude, enable: enable_buttons">{{ _('Run Test') }}</button>
 
     <!-- Esteps Calculation -->
     <div class="control-group form-horizontal" title="Distance to the mark after test has run">
@@ -71,7 +71,7 @@ For more details, see the video below.
         <div class="controls">
             <input type="number" step=0.01 class="input-mini text-right" data-bind="value: calculatedESteps">
             <span class="add-on">steps/mm</span>
-            <button class="btn btn-danger" data-bind="click: setESteps">{{ _('Update Printer Settings') }}</button>
+            <button class="btn btn-danger" data-bind="click: setESteps, enable: enable_buttons">{{ _('Update Printer Settings') }}</button>
         </div>
     </div>
 </div>

@@ -23,8 +23,14 @@ $(function() {
 		var self = this;
 
 		self.settings = parameters[0];
+		self.printerState = parameters[1];
 
-		self.printerIsReady = ko.observable(false);
+		self.enable_buttons = ko.pureComputed(function () {
+			return (
+				!self.printerState.isBusy() &&
+				self.printerState.isReady()
+			);
+		});
 
 		self.lengthToExtrude = ko.observable(100);
 		self.initialDistanceToMark = ko.observable(120);
@@ -45,22 +51,6 @@ $(function() {
 			return numSteps/self.extrudedMaterial();
 		});
 		
-		self.refreshPrinterIsReady = function() {
-			OctoPrint.get("api/connection").done(function(response) {
-				if (response.current.state == "Operational")
-				{
-					// we have a connection, is the printer ready?
-					OctoPrint.get("api/printer").done(function(response){
-						self.printerIsReady(response.state.flags.ready);
-					})
-				}
-				else
-				{
-					self.printerIsReady(false);
-				}
-			})
-		};
-
 		self.refreshCurrentESteps = function() {
 			OctoPrint.simpleApiGet("calibrationtests", {"command": "getPrinterSettings"})
 				.done(function(response) {
@@ -123,23 +113,35 @@ $(function() {
 		// the SettingsViewModel been properly populated.
 		self.onBeforeBinding = function() {
 			// Ensure we update with current printers settings
-			var t = setInterval(self.refreshPrinterIsReady, 1000)
 			var t = setInterval(self.refreshCurrentESteps, 1000)
+		}
+
+        self.onAllBound = function() {
+
+            self.printerState.stateString.subscribe(function(newValue){
+                if (newValue == "Operational"){console.info("O")}
+                if (newValue == "Offline"){console.info("Off")}
+                if (newValue == "Printing"){console.info("Print")}
+                if (newValue == "Pausing"){console.info("Paus")}
+			});
+            self.printerState.isReady.subscribe(function(newValue){
+				console.info(newValue)
+			});
 		}
 	}
 
 	// This is how our plugin registers itself with the application, by adding some configuration
 	// information to the global variable OCTOPRINT_VIEWMODELS
-	OCTOPRINT_VIEWMODELS.push([
+	OCTOPRINT_VIEWMODELS.push({
 		// This is the constructor to call for instantiating the plugin
-		CalibrationTestsViewModel,
+		construct: CalibrationTestsViewModel,
 
 		// This is a list of dependencies to inject into the plugin, the order which you request
 		// here is the order in which the dependencies will be injected into your view model upon
 		// instantiation via the parameters argument
-		["settingsViewModel"],
+		dependencies: ["settingsViewModel", "printerStateViewModel"],
 
 		// Finally, this is the list of selectors for all elements we want this view model to be bound to.
-		["#tab_plugin_calibrationtests"]
-	]);
+		elements: ["#tab_plugin_calibrationtests"]
+	});
 });
