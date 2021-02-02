@@ -10,6 +10,7 @@ For more details, see the video below.
 
 <div class="input-append">
 
+    <!-- Test Configuration -->
     <label class="accordion-toggle collapsed text-right" data-toggle="collapse" data-target="#configuration"><a>Configuration</a></label>
 
     <div id="configuration" class="collapse">
@@ -29,6 +30,7 @@ For more details, see the video below.
         </div>
     </div>
 
+    <!-- Current E-Steps -->
     <div class="control-group form-horizontal" title="The E-Steps setting as configured in the printer's hardware">
         <label class="control-label">Current E-Steps setting</label>
         <div class="controls">
@@ -37,8 +39,10 @@ For more details, see the video below.
         </div>
     </div>
 
+    <!-- Run Test -->
     <button class="btn btn-primary row-fluid" data-bind="click: doExtrude, enable: printerIsReady">{{ _('Run Test') }}</button>
 
+    <!-- Esteps Calculation -->
     <div class="control-group form-horizontal" title="Distance to the mark after test has run">
         <label class="control-label">Remaining distance to mark</label>
         <div class="controls">
@@ -54,6 +58,7 @@ For more details, see the video below.
         </div>
     </div>
 
+    <!-- Calculated E-Steps -->
     <div class="control-group form-horizontal" title="Value to Update the Printers E-Steps setting to">
         <label class="control-label">Calculated E-Steps</label>
         <div class="controls">
