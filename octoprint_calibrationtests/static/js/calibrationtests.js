@@ -51,8 +51,11 @@ $(function() {
 		self.setESteps = function() {
 			// Write the new value, save the setting and read back the data to check
 			commands = [
+				"; Set ESteps to "+self.calculatedESteps(),
 				"M92 E"+self.calculatedESteps(),
+				"; Save setting to EEPROM",
 				"M500",
+				"; Read new settings to check it worked",
 				"M503"
 			];
 			self.sendGcode(commands, ()=>{})
@@ -63,9 +66,13 @@ $(function() {
 			// Ignore requests to extrude if we're already running the test
 			if (!isExtruding) {
 				isExtruding = true;
+				var temp = 200
 				commands = [
-					"M109 S200",
+					"; Pre-heat hotend to " + temp + " & wait",
+					"M109 S" + temp,
+					"; Extrude" + self.lengthToExtrude() + "mm of filament",
 					"G1 E" + self.lengthToExtrude(),
+					"; Set hot-end temp to zero",
 					"M104 S0"
 				];
 				self.sendGcode(commands, ()=>{isExtruding = false;})
