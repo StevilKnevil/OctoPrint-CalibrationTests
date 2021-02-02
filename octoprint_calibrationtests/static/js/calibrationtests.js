@@ -115,19 +115,6 @@ $(function() {
 			// Ensure we update with current printers settings
 			var t = setInterval(self.refreshCurrentESteps, 1000)
 		}
-
-        self.onAllBound = function() {
-
-            self.printerState.stateString.subscribe(function(newValue){
-                if (newValue == "Operational"){console.info("O")}
-                if (newValue == "Offline"){console.info("Off")}
-                if (newValue == "Printing"){console.info("Print")}
-                if (newValue == "Pausing"){console.info("Paus")}
-			});
-            self.printerState.isReady.subscribe(function(newValue){
-				console.info(newValue)
-			});
-		}
 	}
 
 	// This is how our plugin registers itself with the application, by adding some configuration
