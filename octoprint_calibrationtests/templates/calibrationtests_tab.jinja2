@@ -68,4 +68,33 @@ For more details, see the video below.
         </div>
     </div>
 </div>
+
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmGCode">
+  Launch demo modal
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="confirmGCode" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">GCode Preview</h5>
+        <button type="button" class="close" data-dismiss="modal">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <textarea class="form-control row-fluid" id="gCodePreivewTextArea" rows="10" disabled></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Send GCode</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Youtube Video -->
 <iframe width="355" height="200" src="https://www.youtube.com/embed/X3A9Ir2SreI" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>

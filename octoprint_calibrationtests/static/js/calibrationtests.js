@@ -1,3 +1,23 @@
+$.dialog = {
+    confirm: function(options) {
+		var $modal = $('#confirmGCode');
+		var $textArea = $('#gCodePreivewTextArea');
+        $textArea.val(options.message);
+        
+        $modal.off('click.dialog', '.btn, .close')
+            .off('hidden')
+            .on('click.dialog', '.btn, .close', function() {
+				$(this).addClass('modal-result');
+			}).on('hidden', function() {
+				var result = $(this).find('.modal-result').filter('.btn-danger').length > 0;
+				$(this).find('.modal-result').removeClass('modal-result');
+				options.callback(result, $textArea.val());
+	        });
+        
+        $modal.modal();
+    }        
+};
+
 $(function() {
 	function CalibrationTestsViewModel(parameters) {
 		var self = this;
@@ -82,8 +102,19 @@ $(function() {
 		self.sendGcode = function(commandArray, onDone)
 		{
 			if (self.settings.settings.plugins.calibrationtests.confirmAllGcode())
-				alert(commands);
-			OctoPrint.postJson("api/printer/command", {commands: commandArray}).done(onDone)
+			{
+				$.dialog.confirm({message: commandArray.join("\n"), callback: function(result) {
+					if (result)
+						OctoPrint.postJson("api/printer/command", {commands: commandArray}).done(onDone)
+					else
+						onDone()
+				}
+			  });				
+			}
+			else
+			{
+				OctoPrint.postJson("api/printer/command", {commands: commandArray}).done(onDone)
+			}
 		}
 
 		// This will get called before the CalibrationTestsViewModel gets bound to the DOM, but after its
