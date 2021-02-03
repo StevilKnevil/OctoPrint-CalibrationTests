@@ -15,12 +15,12 @@ from . import coolingTest
 #def coolingTest(_logger, startTime, endTime, steps):
 #    _logger.info("coolingTest")
 
-class CalibrationtestsPlugin(octoprint.plugin.StartupPlugin,
+class CalibrationtestsPlugin(octoprint.plugin.StartupPlugin, # Review - possibly unneeded
 							 octoprint.plugin.SettingsPlugin,
 							 octoprint.plugin.AssetPlugin,
 							 octoprint.plugin.TemplatePlugin,
-							 octoprint.plugin.SimpleApiPlugin,
-							 octoprint.plugin.EventHandlerPlugin):
+							 octoprint.plugin.SimpleApiPlugin, # Review - possibly unneeded
+							 octoprint.plugin.EventHandlerPlugin): # Review - possibly unneeded
 
 	##~~ StartupPlugin mixin
 
@@ -75,14 +75,12 @@ class CalibrationtestsPlugin(octoprint.plugin.StartupPlugin,
 		import flask
 		# TODO: route the request based on parameters send (module, command?) Depends on how many GET APIs we end up with!
 		#self._logger.info(request)
-		return flask.jsonify(utilities.getPrinterSettings())
+		return 
 
 	##~~ EventHandlerPlugin mixin
 
 	def on_event(self, event, payload):
-		if event == "Connected":
-			# force a refresh of printer settings
-			utilities.refreshPrinterSettings(self._printer)
+		return
 
 	##~~ Softwareupdate hook
 
@@ -120,6 +118,5 @@ def __plugin_load__():
 	global __plugin_hooks__
 	__plugin_hooks__ = {
 		"octoprint.plugin.softwareupdate.check_config": __plugin_implementation__.get_update_information,
-	    "octoprint.comm.protocol.gcode.received": utilities.detect_machine_settings
 	}
 
