@@ -24,6 +24,7 @@ $(function() {
 
 		self.settings = parameters[0];
 		self.printerState = parameters[1];
+		self.terminal = parameters[2];
 
 		self.enable_buttons = ko.pureComputed(function () {
 			return (
@@ -51,14 +52,6 @@ $(function() {
 			return numSteps/self.extrudedMaterial();
 		});
 		
-		self.refreshCurrentESteps = function() {
-			OctoPrint.simpleApiGet("calibrationtests", {"command": "getPrinterSettings"})
-				.done(function(response) {
-					if (!isNaN(response.ESteps))
-						self.currentESteps(response.ESteps);
-				});
-		};
-
 		self.setESteps = function() {
 			// Write the new value, save the setting and read back the data to check
 			commands = [
@@ -112,8 +105,37 @@ $(function() {
 		// gets called _after_ the settings have been retrieved from the OctoPrint backend and thus
 		// the SettingsViewModel been properly populated.
 		self.onBeforeBinding = function() {
-			// Ensure we update with current printers settings
-			var t = setInterval(self.refreshCurrentESteps, 1000)
+		}
+
+		// Bind subscriptions to view models
+        self.onAllBound = function() {
+			self.printerState.stateString.subscribe(self.onPrinterStateChange);
+            self.terminal.log.subscribe(self.onLogChange, null, "arrayChange");
+		}
+
+		self.onPrinterStateChange = function(newValue) {
+			if (newValue == "Operational"){
+				// We havea newly operational printer, query it for it's settings
+				commandArray = [
+					"; Check machine settings",
+					"M503"
+				];
+				OctoPrint.postJson("api/printer/command", {commands: commandArray})
+			}			
+		}
+
+		self.onLogChange = function(changes) {
+			// Monitor log for printer setting reports
+			changes.forEach(change => {
+				// Check for steps settings: "Recv: echo: M92 X80.0 Y80.0 Z800.0 E77.05"
+				// Note: Regex for (signed) float: -?\d*\.?\d*
+				const regex = /Recv: echo: M92 X(-?\d*\.?\d*) Y(-?\d*\.?\d*) Z(-?\d*\.?\d*) E(-?\d*\.?\d*)/g;
+				let array = [...change.value.line.matchAll(regex)];
+				if (array.length > 0 && array[0].length == 5)
+				{
+					self.currentESteps(array[0][4]);
+				}
+			});
 		}
 	}
 
@@ -126,7 +148,7 @@ $(function() {
 		// This is a list of dependencies to inject into the plugin, the order which you request
 		// here is the order in which the dependencies will be injected into your view model upon
 		// instantiation via the parameters argument
-		dependencies: ["settingsViewModel", "printerStateViewModel"],
+		dependencies: ["settingsViewModel", "printerStateViewModel", "terminalViewModel"],
 
 		// Finally, this is the list of selectors for all elements we want this view model to be bound to.
 		elements: ["#tab_plugin_calibrationtests"]
