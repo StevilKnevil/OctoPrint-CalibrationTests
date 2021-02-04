@@ -19,12 +19,15 @@ $.dialog = {
 };
 
 $(function() {
-	function CalibrationTestsViewModel(parameters) {
+	function EStepsTestViewModel(parameters) {
 		var self = this;
 
 		self.settings = parameters[0];
 		self.printerState = parameters[1];
 		self.terminal = parameters[2];
+
+		self.available_tests = ko.observableArray(['tests/e_steps_test.jinja2']);
+		self.selected_test = ko.observable();
 
 		self.enable_buttons = ko.pureComputed(function () {
 			return (
@@ -143,7 +146,7 @@ $(function() {
 	// information to the global variable OCTOPRINT_VIEWMODELS
 	OCTOPRINT_VIEWMODELS.push({
 		// This is the constructor to call for instantiating the plugin
-		construct: CalibrationTestsViewModel,
+		construct: EStepsTestViewModel,
 
 		// This is a list of dependencies to inject into the plugin, the order which you request
 		// here is the order in which the dependencies will be injected into your view model upon
@@ -151,6 +154,6 @@ $(function() {
 		dependencies: ["settingsViewModel", "printerStateViewModel", "terminalViewModel"],
 
 		// Finally, this is the list of selectors for all elements we want this view model to be bound to.
-		elements: ["#tab_plugin_calibrationtests"]
+		elements: ["#E-StepsTest"]
 	});
 });

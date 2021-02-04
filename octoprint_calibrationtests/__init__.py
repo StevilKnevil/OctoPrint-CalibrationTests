@@ -45,7 +45,7 @@ class CalibrationtestsPlugin(octoprint.plugin.StartupPlugin, # Review - possibly
 		# Define your plugin's asset files to automatically include in the
 		# core UI here.
 		return dict(
-			js=["js/calibrationtests.js"],
+			js=["js/tests/e_steps_test.js"],
 			css=["css/calibrationtests.css"]
 			#less=["less/calibrationtests.less"]
 		)

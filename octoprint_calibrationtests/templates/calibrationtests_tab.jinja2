@@ -1,101 +1,12 @@
-<legend>E-Steps Test</legend>
+{% set file_list = ['tests/e_steps_test.jinja2'] %}
 
-<ol>
-<li>Make a mark on your filament <span data-bind="text: initialDistanceToMark"></span>mm away from where it enters the extruder. 
-<li>When the test runs, <span data-bind="text: lengthToExtrude"></span>mm of material will be extruded.
-<li>Now measure the new distance between the mark and the extruder and enter it into the "Remaining Distance to mark" field below.
-<li>Your new value of E-Steps will be calculated, which you can set on yout printer with the "Update Printer Settings" button.
-</ol>
-For more details, see the video below.
+<select>
+    {% for file_name in file_list %}
+        <option>{{file_name}}</option>
+    {% endfor %}
+</select>
 
-<div class="input-append">
+{% for file_name in file_list %}
+    {% include file_name %}
+{% endfor %}
 
-    <!-- Test Configuration -->
-    <label class="accordion-toggle collapsed text-right" data-toggle="collapse" data-target="#configuration"><a>Configuration</a></label>
-
-    <div id="configuration" class="collapse">
-        <div class="control-group form-horizontal" title="">
-            <label class="control-label">Length to extrude</label>
-            <div class="controls">
-                <input type="number" step=0.01 class="input-mini text-right" data-bind="value: lengthToExtrude">
-                <span class="add-on">mm</span>
-            </div>
-        </div>
-        <div class="control-group form-horizontal " title="The distance to the mark you've made on the filament">
-            <label class="control-label">Initial distance to mark</label>
-            <div class="controls">
-                <input type="number" step=0.01 class="input-mini text-right" data-bind="value: initialDistanceToMark">
-                <span class="add-on">mm</span>
-            </div>
-        </div>
-        <div class="control-group form-horizontal " title="The temprature to heat the hot-end to for the test">
-            <label class="control-label">Hot-End Temperature</label>
-            <div class="controls">
-                <input type="number" step=1 class="input-mini text-right" data-bind="value: hotEndTemp">
-                <span class="add-on">degrees</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Current E-Steps -->
-    <div class="control-group form-horizontal" title="The E-Steps setting as configured in the printer's hardware">
-        <label class="control-label">Current E-Steps setting</label>
-        <div class="controls">
-            <input type="number" step=0.01 class="input-mini text-right" data-bind="value: currentESteps" disabled>
-            <span class="add-on">steps/mm</span>
-        </div>
-    </div>
-
-    <!-- Run Test -->
-    <button class="btn btn-primary row-fluid" data-bind="click: doExtrude, enable: enable_buttons">{{ _('Run Test') }}</button>
-
-    <!-- Esteps Calculation -->
-    <div class="control-group form-horizontal" title="Distance to the mark after test has run">
-        <label class="control-label">Remaining distance to mark</label>
-        <div class="controls">
-            <input type="number" step=0.01 class="input-mini text-right" data-bind="value: remainingDistanceToMark">
-            <span class="add-on">mm</span>
-        </div>
-    </div>
-    <div class="control-group form-horizontal" title="Actual amount of material extruded during test">
-        <label class="control-label">Extruded material</label>
-        <div class="controls">
-            <input type="number" step=0.01 class="input-mini text-right" data-bind="value: extrudedMaterial" disabled>
-            <span class="add-on">mm</span>
-        </div>
-    </div>
-
-    <!-- Calculated E-Steps -->
-    <div class="control-group form-horizontal" title="Value to Update the Printers E-Steps setting to">
-        <label class="control-label">Calculated E-Steps</label>
-        <div class="controls">
-            <input type="number" step=0.01 class="input-mini text-right" data-bind="value: calculatedESteps">
-            <span class="add-on">steps/mm</span>
-            <button class="btn btn-danger" data-bind="click: setESteps, enable: enable_buttons">{{ _('Update Printer Settings') }}</button>
-        </div>
-    </div>
-</div>
-
-<!-- Modal -->
-<div class="modal fade" id="confirmGCode" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">GCode Preview</h5>
-        <button type="button" class="close" data-dismiss="modal">
-          <span>&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <textarea class="form-control row-fluid" id="gCodePreivewTextArea" rows="10" disabled></textarea>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Send GCode</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Youtube Video -->
-<iframe width="355" height="200" src="https://www.youtube.com/embed/X3A9Ir2SreI" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
