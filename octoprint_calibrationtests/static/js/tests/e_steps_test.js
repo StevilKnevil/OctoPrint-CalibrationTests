@@ -154,6 +154,6 @@ $(function() {
 		dependencies: ["settingsViewModel", "printerStateViewModel", "terminalViewModel"],
 
 		// Finally, this is the list of selectors for all elements we want this view model to be bound to.
-		elements: ["#E-StepsTest"]
+		elements: ["#e_steps_test"]
 	});
 });
