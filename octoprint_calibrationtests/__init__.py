@@ -12,8 +12,19 @@ from __future__ import absolute_import
 import octoprint.plugin
 from . import utilities
 from . import coolingTest
-#def coolingTest(_logger, startTime, endTime, steps):
-#    _logger.info("coolingTest")
+
+class Test:
+	def __init__(self, name, displayName):
+		self.template = "tests/" + name + ".jinja2"
+		self.script = "js/tests/" + name + ".js"
+		self.displayName = displayName
+		self.divName = name
+
+def get_tests():
+	return [
+		Test("e_steps_test","E Steps"),
+		Test("cooling_test","Cooling")
+	]
 
 class CalibrationtestsPlugin(octoprint.plugin.StartupPlugin, # Review - possibly unneeded
 							 octoprint.plugin.SettingsPlugin,
@@ -35,17 +46,24 @@ class CalibrationtestsPlugin(octoprint.plugin.StartupPlugin, # Review - possibly
 	##~~ TemplatePlugin mixin
 
 	def get_template_vars(self):
-		return [
-			dict(type="settings", custom_bindings=False)
-		]
+		return {
+			"testlist": get_tests()
+		}		
+		#return [
+		#	dict(type="settings", custom_bindings=False)
+		#]
 
 	##~~ AssetPlugin mixin
 
 	def get_assets(self):
+		scripts = ["js/calibrationtests.js"]		
+		for test in get_tests():
+			scripts.append(test.script)
+
 		# Define your plugin's asset files to automatically include in the
 		# core UI here.
 		return dict(
-			js=["js/tests/e_steps_test.js"],
+			js=scripts,
 			css=["css/calibrationtests.css"]
 			#less=["less/calibrationtests.less"]
 		)

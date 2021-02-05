@@ -1,12 +1,9 @@
-{% set file_list = ['tests/e_steps_test.jinja2'] %}
-
-<select>
-    {% for file_name in file_list %}
-        <option>{{file_name}}</option>
+<select id="testSelector" class="row-fluid">
+    {% for test in plugin_calibrationtests_testlist %}
+        <option value="{{test.divName}}">{{test.displayName}}</option>
     {% endfor %}
 </select>
 
-{% for file_name in file_list %}
-    {% include file_name %}
+{% for test in plugin_calibrationtests_testlist %}
+    {% include test.template %}
 {% endfor %}
-
