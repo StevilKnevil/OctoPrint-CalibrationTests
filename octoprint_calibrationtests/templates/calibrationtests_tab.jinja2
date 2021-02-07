@@ -1,7 +1,7 @@
 <!-- TODO: Add loginstate view model) so that we don't show this without permissions -->
 <!-- TODO: add a save button? or pop up the settings dialog? Or make this readonly? With a link to settings? -->
 <!-- TODO: Make sure this code is shared with settings dialog. Perhaps use jinja "with" to define the path to the settings? -->
-<div id="general_configuration" data-bind="visible: loginState.hasPermissionKo(access.permissions.SETTINGS)">
+<div id="general_configuration" > <!--data-bind="visible: loginState.hasPermissionKo(access.permissions.SETTINGS)"-->
     <!-- General Configuration -->
     <label class="accordion-toggle collapsed text-right" data-toggle="collapse" data-target="#general_configuration_display"><a>General Configuration</a></label>
     <div id="general_configuration_display" class="collapse form-horizontal">
