@@ -43,15 +43,19 @@ class CalibrationtestsPlugin(octoprint.plugin.StartupPlugin, # Review - possibly
 	def get_settings_defaults(self):
 		return dict(confirmAllGcode = True)
 
+	def get_template_configs(self):
+		return [
+			dict(type="tab", custom_bindings=True),
+			dict(type="settings", custom_bindings=False)
+		]
+
 	##~~ TemplatePlugin mixin
 
 	def get_template_vars(self):
 		return {
-			"testlist": get_tests()
-		}		
-		#return [
-		#	dict(type="settings", custom_bindings=False)
-		#]
+			"testlist": get_tests(),
+			"confirmAllGcode": self._settings.get(["confirmAllGcode"])
+		}
 
 	##~~ AssetPlugin mixin
 
