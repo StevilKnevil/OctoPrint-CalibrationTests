@@ -41,7 +41,10 @@ class CalibrationtestsPlugin(octoprint.plugin.StartupPlugin, # Review - possibly
 	##~~ SettingsPlugin mixin
 
 	def get_settings_defaults(self):
-		return dict(confirmAllGcode = True)
+		return dict(
+			confirmAllGcode = True,
+			hotEndTemp = 200
+			)
 
 	def get_template_configs(self):
 		return [
@@ -54,7 +57,8 @@ class CalibrationtestsPlugin(octoprint.plugin.StartupPlugin, # Review - possibly
 	def get_template_vars(self):
 		return {
 			"testlist": get_tests(),
-			"confirmAllGcode": self._settings.get(["confirmAllGcode"])
+			"confirmAllGcode": self._settings.get(["confirmAllGcode"]),
+			"hotEndTemp": self._settings.get(["hotEndTemp"])
 		}
 
 	##~~ AssetPlugin mixin
