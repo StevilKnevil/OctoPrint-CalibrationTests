@@ -1,5 +1,4 @@
-#tab_plugin_calibrationtests iframe {
-    width: 100%;
-    height: 600px;
-    border: 1px solid #808080;
-  }
+#testSelector {
+  height: fit-content;
+  font-size: x-large;
+}
