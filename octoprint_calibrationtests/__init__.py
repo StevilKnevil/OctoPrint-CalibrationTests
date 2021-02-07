@@ -14,16 +14,18 @@ from . import utilities
 from . import coolingTest
 
 class Test:
-	def __init__(self, name, displayName):
+	def __init__(self, name, displayName, settings):
+		self.name = name
 		self.template = "tests/" + name + ".jinja2"
 		self.script = "js/tests/" + name + ".js"
 		self.displayName = displayName
 		self.divName = name
+		self.settings = settings
 
 def get_tests():
 	return [
-		Test("e_steps_test","E Steps"),
-		Test("cooling_test","Cooling")
+		Test("e_steps_test","E Steps", dict(lengthToExtrude=100, initialDistanceToMark=120)),
+		Test("cooling_test","Cooling", dict())
 	]
 
 class CalibrationtestsPlugin(octoprint.plugin.StartupPlugin, # Review - possibly unneeded
@@ -41,10 +43,14 @@ class CalibrationtestsPlugin(octoprint.plugin.StartupPlugin, # Review - possibly
 	##~~ SettingsPlugin mixin
 
 	def get_settings_defaults(self):
-		return dict(
+		settings = dict(
 			confirmAllGcode = True,
-			hotEndTemp = 200
-			)
+			hotEndTemp = 200,
+		)
+		for test in get_tests():
+			settings[test.name] = test.settings
+		return settings
+
 
 	def get_template_configs(self):
 		return [
