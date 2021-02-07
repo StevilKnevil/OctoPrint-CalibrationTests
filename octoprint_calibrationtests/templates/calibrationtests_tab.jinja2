@@ -1,8 +1,33 @@
+<!-- TODO: Add loginstate view model) so that we don't show this without permissions -->
+<!-- TODO: add a save button? or pop up the settings dialog? Or make this readonly? With a link to settings? -->
+<!-- TODO: Make sure this code is shared with settings dialog. Perhaps use jinja "with" to define the path to the settings? -->
+<div id="general_configuration" data-bind="visible: loginState.hasPermissionKo(access.permissions.SETTINGS)">
+    <!-- General Configuration -->
+    <label class="accordion-toggle collapsed text-right" data-toggle="collapse" data-target="#general_configuration_display"><a>General Configuration</a></label>
+    <div id="general_configuration_display" class="collapse form-horizontal">
+        <div class="control-group" title="Confirm all GCode before it is sent to the printer">
+            <label class="control-label">Confirm all GCODE</label>
+            <div class="controls">
+                <input type="checkbox" data-bind="checked: settings.settings.plugins.calibrationtests.confirmAllGcode">
+            </div>
+        </div>
+        <div class="control-group" title="The temprature to heat the hot-end">
+            <label class="control-label">Hot-End Temperature</label>
+            <div class="controls">
+                <input type="number" step=1 class="input-mini text-right" data-bind="value: settings.settings.plugins.calibrationtests.hotEndTemp">
+                <span class="add-on">degrees</span>
+            </div>
+        </div>
+    </div>
+</div>
+
 <select id="testSelector" class="row-fluid">
     {% for test in plugin_calibrationtests_testlist %}
         <option value="{{test.divName}}">{{test.displayName}}</option>
     {% endfor %}
 </select>
+
+<hr>
 
 {% for test in plugin_calibrationtests_testlist %}
     {% include test.template %}
