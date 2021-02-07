@@ -26,6 +26,10 @@ $(function() {
 		self.printerState = parameters[1];
 		self.terminal = parameters[2];
 
+		// Shortcuts to used settings - set in onBeforeBinding()
+		self.confirmAllGcode = null;
+		self.hotEndTemp = null;
+
 		self.available_tests = ko.observableArray(['tests/e_steps_test.jinja2']);
 		self.selected_test = ko.observable();
 
@@ -38,7 +42,6 @@ $(function() {
 
 		self.lengthToExtrude = ko.observable(100);
 		self.initialDistanceToMark = ko.observable(120);
-		self.hotEndTemp = ko.observable(200);
 
 		self.currentESteps = ko.observable();
 
@@ -87,7 +90,7 @@ $(function() {
 
 		self.sendGcode = function(commandArray, onDone)
 		{
-			if (self.settings.settings.plugins.calibrationtests.confirmAllGcode())
+			if (self.confirmAllGcode())
 			{
 				$.dialog.confirm({message: commandArray.join("\n"), callback: function(result) {
 					if (result)
@@ -108,6 +111,9 @@ $(function() {
 		// gets called _after_ the settings have been retrieved from the OctoPrint backend and thus
 		// the SettingsViewModel been properly populated.
 		self.onBeforeBinding = function() {
+			// Shortcuts to used settings
+			self.confirmAllGcode = self.settings.settings.plugins.calibrationtests.confirmAllGcode
+			self.hotEndTemp = self.settings.settings.plugins.calibrationtests.hotEndTemp
 		}
 
 		// Bind subscriptions to view models
