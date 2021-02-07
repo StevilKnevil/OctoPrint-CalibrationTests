@@ -30,9 +30,6 @@ $(function() {
 		self.confirmAllGcode = null;
 		self.hotEndTemp = null;
 
-		self.available_tests = ko.observableArray(['tests/e_steps_test.jinja2']);
-		self.selected_test = ko.observable();
-
 		self.enable_buttons = ko.pureComputed(function () {
 			return (
 				!self.printerState.isBusy() &&
