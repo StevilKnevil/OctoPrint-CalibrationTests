@@ -1,5 +1,58 @@
 <div id="cooling_test" class="calibration-test">
 
-<legend>Cooling Test</legend>
+This test helps establish what a good minimum layer time should be.
 
+The test prints a shape and then switches off the cooling fans, to simulate printing another region of a larger model (so cooling wouldn't occur). After the specified time has passed, it will then print the next layer.
+
+A different time is used in steps every 5 mm, after the test has finished, examine the print for artefacts to establish what a good minimum layer time is.
+
+Things to think about:
+<ol>
+<li>A short layer time makes your prints faster
+<li>A short layer time means that the previous layer is still warm, increasing adhesion
+<li>A short layer time means that the previous layer is still warm, increasing the possibility of distorting previous layers
+</ol>
+
+<div class="input-append">
+
+    <!-- Test Configuration -->
+    <label class="accordion-toggle collapsed text-right" data-toggle="collapse" data-target="#configuration"><a>Configuration</a></label>
+
+    <div id="configuration" class="collapse">
+        <div class="control-group form-horizontal" title="">
+            <label class="control-label">Layer Height (not implemented)</label>
+            <div class="controls">
+            <!--
+                <input type="number" step=0.01 class="input-mini text-right" data-bind="value: layerHeight" disabled>
+                -->
+                <span class="add-on">mm</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="control-group form-horizontal" title="Layer time at the base of the model">
+        <label class="control-label">Initial Layer time</label>
+        <div class="controls">
+            <input type="number" step=1 class="input-mini text-right" data-bind="value: initialLayerTime">
+            <span class="add-on">s</span>
+        </div>
+    </div>
+    <div class="control-group form-horizontal" title="Layer time at the top of the model">
+        <label class="control-label">Final Layer time</label>
+        <div class="controls">
+            <input type="number" step=1 class="input-mini text-right" data-bind="value: finalLayerTime">
+            <span class="add-on">s</span>
+        </div>
+    </div>
+    <div class="control-group form-horizontal" title="Temperature at the top of the model">
+        <label class="control-label">Num Steps</label>
+        <div class="controls">
+            <input type="number" step=1 class="input-mini text-right" data-bind="value: numTimeSteps">
+        </div>
+    </div>
+
+    <!-- Run Test -->
+    <button class="btn btn-primary row-fluid" data-bind="click: runTest, enable: enable_buttons">{{ _('Run Test') }}</button>
+
+</div>
 </div>
