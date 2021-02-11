@@ -12,8 +12,21 @@ from __future__ import absolute_import
 import octoprint.plugin
 from . import utilities
 from . import coolingTest
-#def coolingTest(_logger, startTime, endTime, steps):
-#    _logger.info("coolingTest")
+
+class Test:
+	def __init__(self, name, displayName, settings):
+		self.name = name
+		self.template = "tests/" + name + ".jinja2"
+		self.script = "js/tests/" + name + ".js"
+		self.displayName = displayName
+		self.divName = name
+		self.settings = settings
+
+def get_tests():
+	return [
+		Test("e_steps_test","E Steps", dict(lengthToExtrude=100, initialDistanceToMark=120)),
+		Test("cooling_test","Cooling", dict())
+	]
 
 class CalibrationtestsPlugin(octoprint.plugin.StartupPlugin, # Review - possibly unneeded
 							 octoprint.plugin.SettingsPlugin,
@@ -30,22 +43,41 @@ class CalibrationtestsPlugin(octoprint.plugin.StartupPlugin, # Review - possibly
 	##~~ SettingsPlugin mixin
 
 	def get_settings_defaults(self):
-		return dict(confirmAllGcode = True)
+		settings = dict(
+			confirmAllGcode = True,
+			hotEndTemp = 200,
+		)
+		for test in get_tests():
+			settings[test.name] = test.settings
+		return settings
+
+
+	def get_template_configs(self):
+		return [
+			dict(type="tab", custom_bindings=True),
+			dict(type="settings", custom_bindings=False)
+		]
 
 	##~~ TemplatePlugin mixin
 
 	def get_template_vars(self):
-		return [
-			dict(type="settings", custom_bindings=False)
-		]
+		return {
+			"testlist": get_tests(),
+			"confirmAllGcode": self._settings.get(["confirmAllGcode"]),
+			"hotEndTemp": self._settings.get(["hotEndTemp"])
+		}
 
 	##~~ AssetPlugin mixin
 
 	def get_assets(self):
+		scripts = ["js/calibrationtests.js"]		
+		for test in get_tests():
+			scripts.append(test.script)
+
 		# Define your plugin's asset files to automatically include in the
 		# core UI here.
 		return dict(
-			js=["js/calibrationtests.js"],
+			js=scripts,
 			css=["css/calibrationtests.css"]
 			#less=["less/calibrationtests.less"]
 		)
