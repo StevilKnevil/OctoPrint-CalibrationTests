@@ -25,7 +25,8 @@ class Test:
 def get_tests():
 	return [
 		Test("e_steps_test","E Steps", dict(lengthToExtrude=100, initialDistanceToMark=120)),
-		#Test("cooling_test","Cooling", dict())
+		#Test("cooling_test","Cooling", dict()),
+		Test("retraction_test","Retraction", dict())
 	]
 
 class CalibrationtestsPlugin(octoprint.plugin.StartupPlugin, # Review - possibly unneeded
