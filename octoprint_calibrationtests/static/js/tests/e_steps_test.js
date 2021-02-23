@@ -119,6 +119,8 @@ $(function() {
 			// Shortcuts to per-test settings
 			self.lengthToExtrude = self.testSettings.lengthToExtrude
 			self.initialDistanceToMark = self.testSettings.initialDistanceToMark
+
+			// TODO: Move the plugin settings into a setting that is saved whenever gcode is generated
 		}
 
 		// Bind subscriptions to view models
