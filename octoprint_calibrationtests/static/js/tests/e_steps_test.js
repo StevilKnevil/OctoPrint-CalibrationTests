@@ -79,6 +79,8 @@ $(function() {
 				commands = [
 					"; Pre-heat hotend to " + self.hotEndTemp() + " & wait",
 					"M109 S" + self.hotEndTemp(),
+					"; Set relative positioning",
+					"G91",
 					"; Extrude" + self.lengthToExtrude() + "mm of filament",
 					"G1 E" + self.lengthToExtrude(),
 					"; Set hot-end temp to zero",
@@ -131,7 +133,7 @@ $(function() {
 
 		self.onPrinterStateChange = function(newValue) {
 			if (newValue == "Operational"){
-				// We havea newly operational printer, query it for it's settings
+				// We have a newly operational printer, query it for it's settings
 				commandArray = [
 					"; Check machine settings",
 					"M503"
