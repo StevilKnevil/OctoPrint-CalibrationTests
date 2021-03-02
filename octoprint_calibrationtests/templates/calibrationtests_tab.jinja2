@@ -8,13 +8,13 @@
         <div class="control-group" title="Confirm all GCode before it is sent to the printer">
             <label class="control-label">Confirm all GCODE</label>
             <div class="controls">
-                <input type="checkbox" data-bind="checked: settings.settings.plugins.calibrationtests.confirmAllGcode">
+                <input type="checkbox" data-bind="checked: confirmAllGcode">
             </div>
         </div>
         <div class="control-group" title="The temprature to heat the hot-end">
             <label class="control-label">Hot-End Temperature</label>
             <div class="controls">
-                <input type="number" step=1 class="input-mini text-right" data-bind="value: settings.settings.plugins.calibrationtests.hotEndTemp">
+                <input type="number" step=1 class="input-mini text-right" data-bind="value: hotEndTemp">
                 <span class="add-on">degrees</span>
             </div>
         </div>

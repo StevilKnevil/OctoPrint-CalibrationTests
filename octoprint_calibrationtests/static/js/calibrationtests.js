@@ -19,28 +19,60 @@ $(function() {
 		self.settings = parameters[0];
 
 		self.isDirty = ko.observable(false);
+
+		self.confirmAllGcode = ko.observable(undefined);
+		self.hotEndTemp = ko.observable(undefined);
+
 		self.saveSettings = function() {
 			// Save them
 			OctoPrint.settings.savePluginSettings("calibrationtests", 
 				{
-					confirmAllGcode: self.settings.settings.plugins.calibrationtests.confirmAllGcode(),
-					hotEndTemp: self.settings.settings.plugins.calibrationtests.hotEndTemp(),
+					confirmAllGcode: self.confirmAllGcode(),
+					hotEndTemp: self.hotEndTemp(),
 				}, null);
 			self.isDirty(false);
-		};	
+		};
+
 		self.resetSettings = function() {
-			alert("TODO")
+			// Save them
+			OctoPrint.settings.getPluginSettings("calibrationtests", null).done(function(data){
+				self.confirmAllGcode(data.confirmAllGcode);
+				self.hotEndTemp(data.hotEndTemp);
+			});
+			self.isDirty(false);			
+			//alert("TODO")
+		}
+
+		self.setDirty = function() {
+			self.isDirty(true);
 		}
 
 		self.onBeforeBinding = function() {
-			// TODO: This shouldn't update unless the settings are changed from here. I.e. if the user changes a setting in a different dialog, then this button shouldn't become active.
-			// Add a layer of indirection here?
-			self.settings.settings.plugins.calibrationtests.confirmAllGcode.subscribe(function () {
-				self.isDirty(true);
+			self.confirmAllGcode(self.settings.settings.plugins.calibrationtests.confirmAllGcode());
+			self.hotEndTemp(self.settings.settings.plugins.calibrationtests.hotEndTemp());
+
+			var confirmAllGcodeSubscription = self.confirmAllGcode.subscribe(self.setDirty);
+			var hotEndTempSubscription = self.hotEndTemp.subscribe(self.setDirty);
+			
+			self.settings.settings.plugins.calibrationtests.confirmAllGcode.subscribe(function(val) {
+				// Temp disable the subscription
+				confirmAllGcodeSubscription.dispose();
+				self.confirmAllGcode(val);
+				hotEndTempSubscription = self.hotEndTemp.subscribe(self.setDirty);
 			});
-			self.settings.settings.plugins.calibrationtests.hotEndTemp.subscribe(function () {
-				self.isDirty(true);
+			self.settings.settings.plugins.calibrationtests.hotEndTemp.subscribe(function(val) {
+				// Temp disable the subscription
+				hotEndTempSubscription.dispose();
+				self.hotEndTemp(val);
+				hotEndTempSubscription = self.hotEndTemp.subscribe(self.setDirty);
 			});
+		}
+
+		self.onSettingsBeforeSave = function() {
+			// Sync our settings with the settings view model
+
+			// Make sure buttons are appropriately enabled
+			
 		}
 	}
 
