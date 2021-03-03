@@ -18,7 +18,7 @@ $(function() {
 		var self = this;
 		self.settings = parameters[0];
 
-		self.isDirty = ko.observable(false)
+		self.settingsNeedSaving = ko.observable(false)
 
 		self.confirmAllGcode = ko.observable(undefined);
 		self.hotEndTemp = ko.observable(undefined);
@@ -34,7 +34,7 @@ $(function() {
 					hotEndTemp: self.hotEndTemp(),
 				}, null);
 			self.isUpdatingSettings = false;
-			self.isDirty(false);
+			self.settingsNeedSaving(false);
 		};
 
 		self.resetSettings = function() {
@@ -43,15 +43,15 @@ $(function() {
 				self.confirmAllGcode(data.confirmAllGcode);
 				self.hotEndTemp(data.hotEndTemp);
 			});
-			self.isDirty(false);
+			self.settingsNeedSaving(false);
 		}
 
 		self.onBeforeBinding = function() {
 			// sync with settings view model when user saves the settings
 			self.onSettingsBeforeSave();
 
-			self.confirmAllGcode.subscribe(function() {self.isDirty(true)});
-			self.hotEndTemp.subscribe(function() {self.isDirty(true)});
+			self.confirmAllGcode.subscribe(function() {self.settingsNeedSaving(true)});
+			self.hotEndTemp.subscribe(function() {self.settingsNeedSaving(true)});
 		}
 
 		self.onSettingsBeforeSave = function() {
@@ -64,10 +64,10 @@ $(function() {
 				// Make sure buttons are appropriately enabled
 				if ((self.confirmAllGcode() == self.settings.settings.plugins.calibrationtests.confirmAllGcode()) &&
 					(self.hotEndTemp() == self.settings.settings.plugins.calibrationtests.hotEndTemp())) {
-						self.isDirty(false);
+						self.settingsNeedSaving(false);
 				}
 				else {
-					self.isDirty(true);
+					self.settingsNeedSaving(true);
 				}
 			}
 		}
