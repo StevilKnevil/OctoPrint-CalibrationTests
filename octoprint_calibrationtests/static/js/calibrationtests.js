@@ -18,18 +18,22 @@ $(function() {
 		var self = this;
 		self.settings = parameters[0];
 
-		self.isDirty = ko.observable(false);
+		self.isDirty = ko.observable(false)
 
 		self.confirmAllGcode = ko.observable(undefined);
 		self.hotEndTemp = ko.observable(undefined);
 
+		// Guard to make sure we know when we're responsible for updating settings
+		self.isUpdatingSettings = false;
 		self.saveSettings = function() {
+			self.isUpdatingSettings = true;
 			// Save them
 			OctoPrint.settings.savePluginSettings("calibrationtests", 
 				{
 					confirmAllGcode: self.confirmAllGcode(),
 					hotEndTemp: self.hotEndTemp(),
 				}, null);
+			self.isUpdatingSettings = false;
 			self.isDirty(false);
 		};
 
@@ -39,40 +43,33 @@ $(function() {
 				self.confirmAllGcode(data.confirmAllGcode);
 				self.hotEndTemp(data.hotEndTemp);
 			});
-			self.isDirty(false);			
-			//alert("TODO")
-		}
-
-		self.setDirty = function() {
-			self.isDirty(true);
+			self.isDirty(false);
 		}
 
 		self.onBeforeBinding = function() {
-			self.confirmAllGcode(self.settings.settings.plugins.calibrationtests.confirmAllGcode());
-			self.hotEndTemp(self.settings.settings.plugins.calibrationtests.hotEndTemp());
+			// sync with settings view model when user saves the settings
+			self.onSettingsBeforeSave();
 
-			var confirmAllGcodeSubscription = self.confirmAllGcode.subscribe(self.setDirty);
-			var hotEndTempSubscription = self.hotEndTemp.subscribe(self.setDirty);
-			
-			self.settings.settings.plugins.calibrationtests.confirmAllGcode.subscribe(function(val) {
-				// Temp disable the subscription
-				confirmAllGcodeSubscription.dispose();
-				self.confirmAllGcode(val);
-				hotEndTempSubscription = self.hotEndTemp.subscribe(self.setDirty);
-			});
-			self.settings.settings.plugins.calibrationtests.hotEndTemp.subscribe(function(val) {
-				// Temp disable the subscription
-				hotEndTempSubscription.dispose();
-				self.hotEndTemp(val);
-				hotEndTempSubscription = self.hotEndTemp.subscribe(self.setDirty);
-			});
+			self.confirmAllGcode.subscribe(function() {self.isDirty(true)});
+			self.hotEndTemp.subscribe(function() {self.isDirty(true)});
 		}
 
 		self.onSettingsBeforeSave = function() {
-			// Sync our settings with the settings view model
+			if (!self.isUpdatingSettings)
+			{
+				// Sync our settings with the settings view model
+				self.confirmAllGcode(self.settings.settings.plugins.calibrationtests.confirmAllGcode());
+				self.hotEndTemp(self.settings.settings.plugins.calibrationtests.hotEndTemp());
 
-			// Make sure buttons are appropriately enabled
-			
+				// Make sure buttons are appropriately enabled
+				if ((self.confirmAllGcode() == self.settings.settings.plugins.calibrationtests.confirmAllGcode()) &&
+					(self.hotEndTemp() == self.settings.settings.plugins.calibrationtests.hotEndTemp())) {
+						self.isDirty(false);
+				}
+				else {
+					self.isDirty(true);
+				}
+			}
 		}
 	}
 
