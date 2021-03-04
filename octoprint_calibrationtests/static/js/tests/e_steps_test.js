@@ -26,9 +26,9 @@ $(function() {
 		self.printerState = parameters[1];
 		self.terminal = parameters[2];
 
-		// Shortcuts to used plugin settings
-		self.confirmAllGcode = null;
-		self.hotEndTemp = null;
+		// Settings shortcuts: set in onBeforeBinding()
+		self.pluginSettings = null;
+		self.testSettings = null;
 		// Shortcuts to per-test settings
 		self.lengthToExtrude = null;
 		self.initialDistanceToMark = null;
@@ -74,8 +74,8 @@ $(function() {
 			if (!isExtruding) {
 				isExtruding = true;
 				commands = [
-					"; Pre-heat hotend to " + self.hotEndTemp() + " & wait",
-					"M109 S" + self.hotEndTemp(),
+					"; Pre-heat hotend to " + self.pluginSettings.hotEndTemp() + " & wait",
+					"M109 S" + self.pluginSettings.hotEndTemp(),
 					"; Set relative positioning",
 					"G91",
 					"; Extrude" + self.lengthToExtrude() + "mm of filament",
@@ -89,7 +89,7 @@ $(function() {
 
 		self.sendGcode = function(commandArray, onDone)
 		{
-			if (self.confirmAllGcode())
+			if (self.pluginSettings.confirmAllGcode())
 			{
 				$.dialog.confirm({message: commandArray.join("\n"), callback: function(result) {
 					if (result)
@@ -110,12 +110,11 @@ $(function() {
 		// gets called _after_ the settings have been retrieved from the OctoPrint backend and thus
 		// the SettingsViewModel been properly populated.
 		self.onBeforeBinding = function() {
-			// Shortcuts to used settings
-			self.confirmAllGcode = self.settings.settings.plugins.calibrationtests.confirmAllGcode
-			self.hotEndTemp = self.settings.settings.plugins.calibrationtests.hotEndTemp
+			self.pluginSettings = self.settings.settings.plugins.calibrationtests
+			self.testSettings = self.settings.settings.plugins.calibrationtests.e_steps_test
 			// Shortcuts to per-test settings
-			self.lengthToExtrude = self.settings.settings.plugins.calibrationtests.e_steps_test.lengthToExtrude
-			self.initialDistanceToMark = self.settings.settings.plugins.calibrationtests.e_steps_test.initialDistanceToMark
+			self.lengthToExtrude = self.testSettings.lengthToExtrude
+			self.initialDistanceToMark = self.testSettings.initialDistanceToMark
 		}
 
 		// Bind subscriptions to view models
