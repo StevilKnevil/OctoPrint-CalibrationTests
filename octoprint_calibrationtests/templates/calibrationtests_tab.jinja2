@@ -19,8 +19,8 @@
             </div>
         </div>
         <div class="control-group pull-right">
-            <button class="btn float-end" data-bind="click: resetSettings, enable: isDirty">{{ _('Reset Settings') }}</button>
-            <button class="btn btn-primary float-end" data-bind="click: saveSettings, enable: isDirty">{{ _('Save Settings') }}</button>
+            <button class="btn float-end" data-bind="click: resetSettings, enable: settingsNeedSaving">{{ _('Reset Settings') }}</button>
+            <button class="btn btn-primary float-end" data-bind="click: saveSettings, enable: settingsNeedSaving">{{ _('Save Settings') }}</button>
         </div> 
     </div>
        
