@@ -73,6 +73,15 @@ $(function() {
 			// Ignore requests to extrude if we're already running the test
 			if (!isExtruding) {
 				isExtruding = true;
+				// Save the current settings for future sessions
+				OctoPrint.settings.savePluginSettings("calibrationtests", 
+				{
+					e_steps_test: {
+						lengthToExtrude: self.lengthToExtrude(),
+						initialDistanceToMark: self.initialDistanceToMark()
+					}
+				}, null);
+
 				commands = [
 					"; Pre-heat hotend to " + self.pluginSettings.hotEndTemp() + " & wait",
 					"M109 S" + self.pluginSettings.hotEndTemp(),
@@ -97,7 +106,7 @@ $(function() {
 					else
 						onDone()
 				}
-			  });				
+			  });
 			}
 			else
 			{
