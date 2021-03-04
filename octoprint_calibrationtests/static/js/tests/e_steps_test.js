@@ -26,9 +26,6 @@ $(function() {
 		self.printerState = parameters[1];
 		self.terminal = parameters[2];
 
-		// Settings shortcuts: set in onBeforeBinding()
-		self.pluginSettings = null;
-		self.testSettings = null;
 		// Shortcuts to used plugin settings
 		self.confirmAllGcode = null;
 		self.hotEndTemp = null;
@@ -113,16 +110,12 @@ $(function() {
 		// gets called _after_ the settings have been retrieved from the OctoPrint backend and thus
 		// the SettingsViewModel been properly populated.
 		self.onBeforeBinding = function() {
-			self.pluginSettings = self.settings.settings.plugins.calibrationtests
-			self.testSettings = self.settings.settings.plugins.calibrationtests.e_steps_test
 			// Shortcuts to used settings
-			self.confirmAllGcode = self.pluginSettings.confirmAllGcode
-			self.hotEndTemp = self.pluginSettings.hotEndTemp
+			self.confirmAllGcode = self.settings.settings.plugins.calibrationtests.confirmAllGcode
+			self.hotEndTemp = self.settings.settings.plugins.calibrationtests.hotEndTemp
 			// Shortcuts to per-test settings
-			self.lengthToExtrude = self.testSettings.lengthToExtrude
-			self.initialDistanceToMark = self.testSettings.initialDistanceToMark
-
-			// TODO: Move the plugin settings into a setting that is saved whenever gcode is generated
+			self.lengthToExtrude = self.settings.settings.plugins.calibrationtests.e_steps_test.lengthToExtrude
+			self.initialDistanceToMark = self.settings.settings.plugins.calibrationtests.e_steps_test.initialDistanceToMark
 		}
 
 		// Bind subscriptions to view models
