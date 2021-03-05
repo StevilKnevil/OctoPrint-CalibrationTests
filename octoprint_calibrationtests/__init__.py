@@ -54,7 +54,6 @@ class CalibrationtestsPlugin(octoprint.plugin.StartupPlugin, # Review - possibly
 
 	def get_template_configs(self):
 		return [
-			#dict(type="tab", custom_bindings=False),
 			dict(type="settings", custom_bindings=False)
 		]
 
