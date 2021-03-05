@@ -29,9 +29,6 @@ $(function() {
 		// Settings shortcuts: set in onBeforeBinding()
 		self.pluginSettings = null;
 		self.testSettings = null;
-		// Shortcuts to used plugin settings
-		self.confirmAllGcode = null;
-		self.hotEndTemp = null;
 		// Shortcuts to per-test settings
 		self.lengthToExtrude = null;
 		self.initialDistanceToMark = null;
@@ -76,9 +73,20 @@ $(function() {
 			// Ignore requests to extrude if we're already running the test
 			if (!isExtruding) {
 				isExtruding = true;
+				// Save the current settings for future sessions
+				OctoPrint.settings.savePluginSettings("calibrationtests", 
+				{
+					e_steps_test: {
+						lengthToExtrude: self.lengthToExtrude(),
+						initialDistanceToMark: self.initialDistanceToMark()
+					}
+				}, null);
+
 				commands = [
-					"; Pre-heat hotend to " + self.hotEndTemp() + " & wait",
-					"M109 S" + self.hotEndTemp(),
+					"; Pre-heat hotend to " + self.pluginSettings.hotEndTemp() + " & wait",
+					"M109 S" + self.pluginSettings.hotEndTemp(),
+					"; Set relative positioning",
+					"G91",
 					"; Extrude" + self.lengthToExtrude() + "mm of filament",
 					"G1 E" + self.lengthToExtrude(),
 					"; Set hot-end temp to zero",
@@ -90,7 +98,7 @@ $(function() {
 
 		self.sendGcode = function(commandArray, onDone)
 		{
-			if (self.confirmAllGcode())
+			if (self.pluginSettings.confirmAllGcode())
 			{
 				$.dialog.confirm({message: commandArray.join("\n"), callback: function(result) {
 					if (result)
@@ -98,7 +106,7 @@ $(function() {
 					else
 						onDone()
 				}
-			  });				
+			  });
 			}
 			else
 			{
@@ -113,9 +121,6 @@ $(function() {
 		self.onBeforeBinding = function() {
 			self.pluginSettings = self.settings.settings.plugins.calibrationtests
 			self.testSettings = self.settings.settings.plugins.calibrationtests.e_steps_test
-			// Shortcuts to used settings
-			self.confirmAllGcode = self.pluginSettings.confirmAllGcode
-			self.hotEndTemp = self.pluginSettings.hotEndTemp
 			// Shortcuts to per-test settings
 			self.lengthToExtrude = self.testSettings.lengthToExtrude
 			self.initialDistanceToMark = self.testSettings.initialDistanceToMark
@@ -129,7 +134,7 @@ $(function() {
 
 		self.onPrinterStateChange = function(newValue) {
 			if (newValue == "Operational"){
-				// We havea newly operational printer, query it for it's settings
+				// We have a newly operational printer, query it for it's settings
 				commandArray = [
 					"; Check machine settings",
 					"M503"
