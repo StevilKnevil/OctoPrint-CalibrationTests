@@ -16,8 +16,61 @@ $('#testSelector').on('change', function () {
 $(function() {
 	function GeneralSettingsViewModel(parameters) {
 		var self = this;
-
 		self.settings = parameters[0];
+
+		self.settingsNeedSaving = ko.observable(false)
+
+		self.confirmAllGcode = ko.observable(undefined);
+		self.hotEndTemp = ko.observable(undefined);
+
+		// Guard to make sure we know when we're responsible for updating settings
+		self.isUpdatingSettings = false;
+		self.saveSettings = function() {
+			self.isUpdatingSettings = true;
+			// Save them
+			OctoPrint.settings.savePluginSettings("calibrationtests", 
+				{
+					confirmAllGcode: self.confirmAllGcode(),
+					hotEndTemp: self.hotEndTemp(),
+				}, null);
+			self.isUpdatingSettings = false;
+			self.settingsNeedSaving(false);
+		};
+
+		self.resetSettings = function() {
+			// Save them
+			OctoPrint.settings.getPluginSettings("calibrationtests", null).done(function(data){
+				self.confirmAllGcode(data.confirmAllGcode);
+				self.hotEndTemp(data.hotEndTemp);
+			});
+			self.settingsNeedSaving(false);
+		}
+
+		self.onBeforeBinding = function() {
+			// sync with settings view model when user saves the settings
+			self.onSettingsBeforeSave();
+
+			self.confirmAllGcode.subscribe(function() {self.settingsNeedSaving(true)});
+			self.hotEndTemp.subscribe(function() {self.settingsNeedSaving(true)});
+		}
+
+		self.onSettingsBeforeSave = function() {
+			if (!self.isUpdatingSettings)
+			{
+				// Sync our settings with the settings view model
+				self.confirmAllGcode(self.settings.settings.plugins.calibrationtests.confirmAllGcode());
+				self.hotEndTemp(self.settings.settings.plugins.calibrationtests.hotEndTemp());
+
+				// Make sure buttons are appropriately enabled
+				if ((self.confirmAllGcode() == self.settings.settings.plugins.calibrationtests.confirmAllGcode()) &&
+					(self.hotEndTemp() == self.settings.settings.plugins.calibrationtests.hotEndTemp())) {
+						self.settingsNeedSaving(false);
+				}
+				else {
+					self.settingsNeedSaving(true);
+				}
+			}
+		}
 	}
 
 	// This is how our plugin registers itself with the application, by adding some configuration
